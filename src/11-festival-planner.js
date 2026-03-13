@@ -48,6 +48,47 @@
  *   mgr.getAll(); // => [{ name: "Diwali", ... }, { name: "Republic Day", ... }]
  *   mgr.getUpcoming("2025-01-01", 1); // => [{ name: "Republic Day", ... }]
  */
+// used ai for this
 export function createFestivalManager() {
   // Your code here
+  const festivals = [];
+  const valid_types = ['religious','national','cultural'];
+  return {
+    addFestival(name,date,type){
+      if(!name || !valid_types.includes(type)) return -1;
+      if(festivals.some(f => f.name === name)) return -1;
+      festivals.push({
+        name,
+        date,
+        type
+      });
+      return festivals.length;
+    },
+
+    removeFestival(name){
+      const index = festivals.findIndex(f => f.name === name);
+      if(index === -1) return false;
+      festivals.splice(index,1);
+      return true;
+    },
+
+    getAll(){
+      return [...festivals];
+    },
+
+    getByType(type){
+      return festivals.filter(f => f.type === type);
+    },
+
+    getUpcoming(fromDate, n = 3){
+      return festivals
+          .filter(f=>f.date > fromDate)
+          .sort((a,b) => a.date.localeCompare(b.date))
+          .slice(0,n);
+    },
+
+    getCount(){
+      return festivals.length;
+    }
+  };
 }

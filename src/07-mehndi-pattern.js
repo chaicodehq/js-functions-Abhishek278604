@@ -52,22 +52,43 @@
  *   isPalindrome("madam")     // => true
  *   generatePattern(3)        // => ["*", "**", "***", "**", "*"]
  */
+// used AI for this lab
 export function repeatChar(char, n) {
   // Your code here
+  if(typeof char !== 'string' || n<=0) return '';
+  return char + repeatChar(char, n-1);
 }
 
 export function sumNestedArray(arr) {
   // Your code here
+  if(!Array.isArray(arr)) return 0;
+  return arr.reduce((sum,item) => {
+    if(Array.isArray(item)) return sum + sumNestedArray(item);
+    return typeof item === 'number' ? sum + item: sum;
+  },0);
 }
 
 export function flattenArray(arr) {
   // Your code here
+  if(!Array.isArray(arr)) return [];
+  return arr.reduce((flat,item) => flat.concat(Array.isArray(item) ? flattenArray(item):item) , []);
 }
+
 
 export function isPalindrome(str) {
   // Your code here
+  if(typeof str !== 'string') return false;
+  const s = str.toLowerCase();
+  if(s.length <=1) return true;
+  if(s[0] !== s[s.length -1]) return false;
+  return isPalindrome(s.slice(1,-1));
 }
 
 export function generatePattern(n) {
   // Your code here
+  if(n<=0 || !Number.isInteger(n)) return [];
+  const ascending = Array.from({length: n},(_,i) => '*'.repeat(i+1));
+  const descending = ascending.slice(0,-1).reverse();
+
+  return [...ascending, ...descending];
 }

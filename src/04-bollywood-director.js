@@ -44,14 +44,34 @@
  *   const pricer = createTicketPricer(200);
  *   pricer("gold", true)  // => 200 * 1.5 * 1.3 = 390
  */
+// used AI for these questions:
+const templates = {
+  action: (hero,villain)  => `${hero} says: 'Tujhe toh main dekh lunga, ${villain}!'`,
+  romance: (hero,villain) => `${hero} whispers: '${villain}, tum mere liye sab kuch ho'`,
+  comedy: (hero,villain)  => `${hero} laughs: '${villain} bhai, kya kar rahe ho yaar!'`,
+  drama: (hero,villain)  => `${hero} cries: '${villain}, tune mera sab kuch cheen liya!'`
+};
 export function createDialogueWriter(genre) {
   // Your code here
+  if(!(genre in templates)) return null;
+  return (hero,villain) => (!hero || !villain) ? '...' : templates[genre](hero,villain);
 }
 
+const seatMultipliers = {silver: 1, gold: 1.5, platinum: 2};
 export function createTicketPricer(basePrice) {
   // Your code here
+  if (basePrice <=0) return null;
+  return (seatType,isWeekend =false) => {
+    if(!(seatType in seatMultipliers)) return null;
+    return Math.round(basePrice * seatMultipliers[seatType] * (isWeekend ? 1.3:1));
+  }
 }
 
 export function createRatingCalculator(weights) {
   // Your code here
+  if(!weights || typeof weights !== 'object') return null;
+  return (scores) => {
+    const total = Object.keys(weights).reduce((sum,key) => sum + (scores[key] || 0)* weights[key],0);
+    return Math.round(total *10) /10;
+  };
 }

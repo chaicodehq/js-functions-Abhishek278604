@@ -39,14 +39,31 @@
  *   combinePlans(plan1, plan2, plan3)
  *   // => { totalCustomers: 3, totalRevenue: 7200, mealBreakdown: { veg: 2, nonveg: 1 } }
  */
+const rates = {veg:80, nonveg:120, jain:90};
 export function createTiffinPlan({ name, mealType = "veg", days = 30 } = {}) {
   // Your code here
+  if(!name || !(mealType in rates)) return null;
+  const dailyRate = rates[mealType];
+  return {name, mealType, days, dailyRate, totalCost: dailyRate*days};
 }
 
 export function combinePlans(...plans) {
   // Your code here
+  if(!plans.length) return null;
+  const totalRevenue = plans.reduce((sum,i)=> sum + i.totalCost,0);
+  const mealBreakdown = plans.reduce((acc,i)=> {
+    acc[i.mealType] = (acc[i.mealType] || 0) +1;
+    return acc;
+
+  },{});
+
+  return {totalCustomers: plans.length, totalRevenue,mealBreakdown};
 }
 
 export function applyAddons(plan, ...addons) {
   // Your code here
+  if(!plan) return null;
+  const totalAddon = addons.reduce((sum,a)=> sum + a.price,0);
+  const dailyRate = plan.dailyRate + totalAddon;
+  return {plan,dailyRate,totalCost:dailyRate*plan.days,addonNames: addons.map(a => a.name) };
 }

@@ -44,18 +44,36 @@
  *   [{ rating: 3 }, { rating: 5 }].sort(byRating)
  *   // => [{ rating: 5 }, { rating: 3 }]
  */
+// used ai for this 
 export function createFilter(field, operator, value) {
   // Your code here
+  const ops = {
+    '>=':(a,b) => a>=b,
+    '<=':(a,b) => a<=b,
+    '>' :(a,b) => a>b,
+    '<' :(a,b) => a<b,
+    '===':(a,b) => a===b
+  };
+  if(!(operator in ops)) return () => false;
+  return (item) => ops[operator](item[field],value);
 }
 
 export function createSorter(field, order = "asc") {
   // Your code here
+  return (a,b) => {
+    if(a[field]<b[field]) return order === 'asc'? -1:1;
+    if(a[field]>b[field]) return order === 'asc'? 1:-1;
+    return 0;
+  };
 }
 
 export function createMapper(fields) {
   // Your code here
+  return (item) => fields.reduce((obj,f) =>({...obj, [f]: item[f]}),{});
 }
 
 export function applyOperations(data, ...operations) {
   // Your code here
+  if(!Array.isArray(data)) return [];
+  return operations.reduce((acc,op) => op(acc),data);
 }

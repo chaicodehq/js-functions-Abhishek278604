@@ -52,30 +52,42 @@
  *   recipe({ name: "Haldi" })
  *   // => { name: "Haldi", form: "powder", packed: true, label: "Haldi Masala" }
  */
+// used ai for this
 export function pipe(...fns) {
   // Your code here
+  return (x) => fns.reduce((v,f) => f(v),x);
 }
 
 export function compose(...fns) {
   // Your code here
+  return (x) => fns.reduceRight((v,f) => f(v),x);
 }
 
 export function grind(spice) {
   // Your code here
+  return {...spice, form: 'powder'};
 }
 
 export function roast(spice) {
   // Your code here
+  return {...spice,roasted: true,aroma:'strong'};
 }
 
 export function mix(spice) {
   // Your code here
+  return {...spice, mixed: true};
 }
 
 export function pack(spice) {
   // Your code here
+  return {...spice, packed: true, label: `${spice.name} Masala`};
 }
 
-export function createRecipe(steps) {
+const steps = {grind, roast, mix, pack};
+export function createRecipe(stepNames) {
   // Your code here
+  if(!Array.isArray(stepNames)) return (x) => x;
+  const fns = stepNames.map(s => steps[s]).filter(Boolean);
+  return pipe(...fns);
+
 }
